@@ -1,12 +1,10 @@
-import torch
+import sys
+sys.path.append("..")
+from retina.network.resnet_splited import resnet152
+import torch 
 
-models = []
-for i in range(1, 53):
-    model = torch.load('../models/resnet152_52_'+str(i)+'.pth')
-    models.append(model)
-
-input_data = torch.randn((1, 3, 224, 224))
-for model in models:
-    input_data = model(input_data)
-
-print(input_data.shape)
+device = torch.device("cuda")
+model = resnet152().to("cuda")
+input = torch.randn((1, 3, 224, 224)).to(device)
+output = model(input)
+print(output.shape)

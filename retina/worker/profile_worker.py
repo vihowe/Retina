@@ -25,7 +25,7 @@ class ProfileWorker(Worker):
 
     def run(self) -> None:
         device = torch.device("cuda")
-        model_fc = self._run_config.model_list[self._model_name].to(device)
+        model_fc = self._run_config.models_list[self._model_name]().to(device)
 
         # prepare input data
         if self._model_name[0:6] == 'resnet':

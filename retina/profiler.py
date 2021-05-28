@@ -19,7 +19,7 @@ class Profiler(object):
         profile_data_path = os.path.join(self._runtime_config.data_path, 'profile_data')
         os.makedirs(profile_data_path, exist_ok=True)
 
-        models = list(self._runtime_config.model_list.keys())
+        models = list(self._runtime_config.models_list.keys())
 
         barrier = mp.Barrier(len(models) + 1)
 
