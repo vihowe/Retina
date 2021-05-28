@@ -2,3 +2,4 @@
 .pth
 .pyc
 .csv
+__pycache__
