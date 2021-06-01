@@ -33,8 +33,13 @@ class Option(object):
 
         self.test_loop = 100
 
-        self.infer_bs = 8
-        self.total_queries = 100
+class ServingConfig(object):
+    def __init__(self) -> None:
+        super().__init__()
+        self.supported_load = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+        self.supported_bs = [1, 2, 4, 8, 16, 32, 64]
+        self.bs_queries = 512  # for each load, the number of queries using each bs to serve
+        self.total_queries = self.bs_queries * len(self.supported_bs)    
 
 def parse_options():
     parser = argparse.ArgumentParser(description="Retina")
