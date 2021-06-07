@@ -4,6 +4,7 @@ import torch
 import queue
 import time
 import sys
+import pickle
 
 class ServerWorker(Worker):
     def __init__(self, worker_id, model_name, supported_bs: list, recv_pipe, barrier, run_config, serving_config):

@@ -1,6 +1,8 @@
 import numpy as np
+import pickle
 
 import pandas as pd
+import sys
 from collections import defaultdict
 
 
@@ -81,17 +83,34 @@ def mc_control_epsilon_greedy(data, episode_num, discount_factor=1.0, epsilon=0.
     policy = get_policy(Q, len(supported_bs))   # The epsilon policy derived from Q function
 
     for episode_i in range(1, episode_num+1):
+        if episode_i % 500 == 0:
+            print('\r episode: {}/{}'.format(episode_i, episode_num), end='')
+            sys.stdout.flush()
         # Pick a random state
         state = np.random.choice(supported_load)
         probs = policy(state)
-        action = np.random.choice(np.arange(len(probs)), p=probs)
-
+        action_id = np.random.choice(np.arange(len(probs)), p=probs)
+        action = 2**action_id
         sa_pair = (state, action)
         reward = np.random.choice(data[sa_pair])
         returns_sum[sa_pair] += reward
         returns_count[sa_pair] += 1
-        Q[state][action] = returns_sum[sa_pair] / returns_count[sa_pair]
+        Q[state][action_id] = returns_sum[sa_pair] / returns_count[sa_pair]
 
     return Q, policy
 
 
+def train():
+    data = defaultdict(list)
+    raw_data = pd.read_csv('../data/latency/resnet152.csv')
+    for idx, row in raw_data.iterrows():
+        data[(row['load'], row['bs'])].append(row['reward'])
+    Q, policy = mc_control_epsilon_greedy(data, 20*len(raw_data))
+    print(Q)
+    save_Q(dict(Q))
+
+def save_Q(Q_func):
+    with open('Q_func.pkl', 'wb') as f:
+        pickle.dump(Q_func, f, pickle.HIGHEST_PROTOCOL)
+
+train()
